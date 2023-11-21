@@ -192,8 +192,6 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
     }
   }
 
-
-
   _pickFromTime() async {
     TimeOfDay? newStartTime = await showTimePicker(
       context: context,
