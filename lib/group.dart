@@ -4,6 +4,7 @@ import 'data.dart';
 import 'info_group.dart';
 import 'actions_group.dart';
 import 'screen_list_groups.dart';
+import 'schedule.dart';
 
 class ScreenGroup extends StatefulWidget {
   UserGroup group;
@@ -59,6 +60,10 @@ class _ScreenGroupState extends State<ScreenGroup> {
                   children: [
                     IconButton(
                       onPressed: () {
+                        Navigator.of(context).pop(); // close drawer
+                        Navigator.of(context).push(MaterialPageRoute<void>(
+                          builder: (context) => ScreenSchedule(group: group),
+                        ));
                       },
                       icon: const Icon(Icons.calendar_month),
                     ),

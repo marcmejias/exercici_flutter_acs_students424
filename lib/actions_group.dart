@@ -15,6 +15,11 @@ class ScreenActions extends StatefulWidget {
 
 class _ScreenActionsState extends State<ScreenActions> {
   late UserGroup group;
+  bool checkboxValue1 = false;
+  bool checkboxValue2 = false;
+  bool checkboxValue3 = false;
+  bool checkboxValue4 = false;
+  bool checkboxValue5 = false;
 
   @override
   void initState() {
@@ -33,38 +38,58 @@ class _ScreenActionsState extends State<ScreenActions> {
       body: Column(
         children: <Widget>[
           CheckboxListTile(
-            title: Text("Open"),
-            subtitle: Text("opens an unlocked door"),
-            value: false,
-            onChanged: (bool? value) {},
+            value: checkboxValue1,
+            onChanged: (bool? value) {
+              setState(() {
+                checkboxValue1 = value!;
+              });
+            },
+            title: const Text('Open'),
+            subtitle: const Text('Opens an unlocked door'),
           ),
           Divider(),
           CheckboxListTile(
-            title: Text("Close"),
-            subtitle: Text("closes an open door"),
-            value: false,
-            onChanged: (bool? value) {},
+            title: const Text("Close"),
+            subtitle: const Text("closes an open door"),
+            value: checkboxValue2,
+            onChanged: (bool? value) {
+              setState(() {
+                checkboxValue2 = value!;
+              });
+            },
           ),
           Divider(),
           CheckboxListTile(
-            title: Text("Locked"),
-            subtitle: Text("locks a door or all the doors in a room or a group of rooms, if closed"),
-            value: false,
-            onChanged: (bool? value) {},
+            title: const Text("Locked"),
+            subtitle: const Text("locks a door or all the doors in a room or a group of rooms, if closed"),
+            value: checkboxValue3,
+            onChanged: (bool? value) {
+              setState(() {
+                checkboxValue3 = value!;
+              });
+            },
           ),
           Divider(),
           CheckboxListTile(
-            title: Text("Unlock"),
-            subtitle: Text("Unlocks a locked door or all the locked doors in a room"),
-            value: false,
-            onChanged: (bool? value) {},
+            title: const Text("Unlock"),
+            subtitle: const Text("Unlocks a locked door or all the locked doors in a room"),
+            value: checkboxValue4,
+            onChanged: (bool? value) {
+              setState(() {
+                checkboxValue4 = value!;
+              });
+            },
           ),
           Divider(),
           CheckboxListTile(
-            title: Text("Unlock shortly"),
-            subtitle: Text("Unlocks a door during 10 seconds and locks it if it is closed"),
-            value: false,
-            onChanged: (bool? value) {},
+            title: const Text("Unlock shortly"),
+            subtitle: const Text("Unlocks a door during 10 seconds and locks it if it is closed"),
+            value: checkboxValue5,
+            onChanged: (bool? value) {
+              setState(() {
+                checkboxValue5 = value!;
+              });
+            },
           ),
           Divider(),
           Padding(
