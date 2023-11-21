@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'data.dart';
 import 'the_drawer.dart';
+import 'group.dart';
 
 class ScreenListGroups extends StatefulWidget {
   List<UserGroup> userGroups;
@@ -60,7 +61,12 @@ class _ScreenListGroupsState extends State<ScreenListGroups> {
     return ListTile(
       title: Text(userGroup.name),
       trailing: Text('${userGroup.users.length}'),
-      onTap: () {},
+      onTap: () {
+        Navigator.of(context).pop(); // close drawer
+        Navigator.of(context).push(MaterialPageRoute<void>(
+          builder: (context) => ScreenGroup(group: userGroup),
+        ));
+      },
     );
   }
 }
