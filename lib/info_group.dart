@@ -42,8 +42,8 @@ class _ScreenInfoState extends State<ScreenInfo> {
                   hintText: "Name Group",
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter some text';
+                  if (value != group.name) {
+                    group.name = value.toString();
                   }
                   return null;
                 },
@@ -53,17 +53,27 @@ class _ScreenInfoState extends State<ScreenInfo> {
                 decoration: const InputDecoration(
                   hintText: "Description",
                 ),
+                validator: (value) {
+                  if (value != group.description) {
+                    group.description = value.toString();
+                  }
+                  return null;
+                },
               ),
               Padding(
                 padding: EdgeInsets.zero,
                 child: ElevatedButton(
-                  child: Text("Submit"),
                   onPressed: () {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(
-                      const SnackBar(content: Text("Saved"))
-                    );
+                    // Validate returns true if the form is valid, or false otherwise.
+                    if (_formKey.currentState!.validate()) {
+                      // If the form is valid, display a snackbar. In the real world,
+                      // you'd often call a server or save the information in a database.
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Saved')),
+                      );
+                    }
                   },
+                  child: const Text('Submit'),
                 ),
               ),
             ],
