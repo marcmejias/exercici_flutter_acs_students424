@@ -34,6 +34,7 @@ class _ScreenInfoState extends State<ScreenInfo> {
       body: Form(
         key: _formKey,
         child: Container(
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               TextFormField(
@@ -48,7 +49,6 @@ class _ScreenInfoState extends State<ScreenInfo> {
                   return null;
                 },
               ),
-              Divider(),
               TextFormField(
                 initialValue: group.description,
                 decoration: const InputDecoration(
@@ -61,9 +61,8 @@ class _ScreenInfoState extends State<ScreenInfo> {
                   return null;
                 },
               ),
-              Divider(),
               Padding(
-                padding: EdgeInsets.zero,
+                padding: const EdgeInsets.all(20),
                 child: ElevatedButton(
                   onPressed: () {
                     // Validate returns true if the form is valid, or false otherwise.

@@ -1,8 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'data.dart';
 import 'the_drawer.dart';
 import 'group.dart';
 import 'package:intl/intl.dart';
+import 'package:weekday_selector/weekday_selector.dart';
+import 'package:intl/date_symbols.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/date_symbols.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
 class ScreenSchedule extends StatefulWidget {
@@ -26,18 +32,24 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
       DateTime(today.year, today.month, today.day - today.weekday + 1);
   static DateTime sundayThisWeek =
       DateTime(today.year, today.month, today.day - today.weekday + 7);
-  static DateTime initialDate = mondayThisWeek.subtract(new Duration(days: 7));
-  static DateTime finalDate = mondayThisWeek.subtract(new Duration(days: 1));
   late DateTimeRange picker;
-
+  late TimeOfDay initialTime;
+  late TimeOfDay finalTime;
+  late DateTime initialDate;
+  late DateTime finalDate;
+  List<bool> values = List.filled(7, true);
   TimeOfDay horaActual = TimeOfDay.now();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    picker = DateTimeRange(start: initialDate, end: finalDate);
     group = widget.group;
+    initialDate = group.schedule.fromDate;
+    finalDate = group.schedule.toDate;
+    initialTime = group.schedule.fromTime;
+    finalTime = group.schedule.toTime;
+    picker = DateTimeRange(start: initialDate, end: finalDate);
   }
 
   @override
@@ -49,10 +61,12 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
         title: Text('Schedule ' + group.name),
       ),
       body: Container(
+        padding: const EdgeInsets.all(20),
         alignment: Alignment.center,
         child: Column(
           children: <Widget>[
             Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   width: 100,
@@ -64,11 +78,11 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                     ),
                   ),
                 ),
-                Text(DateFormat('dd/MM/yyyy').format(picker.start)),
+                Text(DateFormat('dd/MM/yyyy').format(initialDate)),
                 IconButton(
                   icon: Icon(Icons.calendar_month_sharp),
                   onPressed: () {
-                    _pickFromDate();
+                    _pickFromDate(initialDate);
                   },
                 ),
               ],
@@ -85,16 +99,16 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                     ),
                   ),
                 ),
-                Text(DateFormat('dd/MM/yyyy').format(picker.end)),
+                Text(DateFormat('dd/MM/yyyy').format(finalDate)),
                 IconButton(
                   icon: Icon(Icons.calendar_month_sharp),
                   onPressed: () {
-                    _pickFromDate();
+                    _pickToDate(finalDate);
                   },
                 ),
               ],
             ),
-            Row(
+            Column(
               children: [
                 Container(
                   width: 200,
@@ -106,12 +120,14 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                     ),
                   ),
                 ),
-                Text(DateFormat('dd/MM/yyyy').format(picker.end)),
-                IconButton(
-                  icon: Icon(Icons.calendar_month_sharp),
-                  onPressed: () {
-                    _pickFromDate();
+                WeekdaySelector(
+                  onChanged: (v) {
+                    printIntAsDay(v);
+                    setState(() {
+                      values[v % 7] = !values[v % 7]!;
+                    });
                   },
+                  values: values,
                 ),
               ],
             ),
@@ -127,11 +143,11 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                     ),
                   ),
                 ),
-                Text(DateFormat('HH:mm').format(picker.start)),
+                Text(initialTime.format(context)),
                 IconButton(
                   icon: Icon(Icons.watch_later_outlined),
                   onPressed: () {
-                    _pickFromTime();
+                    _pickFromTime(initialTime);
                   },
                 ),
               ],
@@ -148,11 +164,11 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                     ),
                   ),
                 ),
-                Text(DateFormat('HH:mm').format(picker.end)),
+                Text(finalTime.format(context)),
                 IconButton(
                   icon: Icon(Icons.watch_later_outlined),
                   onPressed: () {
-                    _pickFromTime();
+                    _pickToTime(finalTime);
                   },
                 ),
               ],
@@ -167,7 +183,9 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
                         fontSize: 20,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      _submit();
+                    },
                     child: const Text('Submit'),
                   ),
                 ),
@@ -179,121 +197,100 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
     );
   }
 
-  _pickFromDate() async {
+  _submit() async {
+    group.schedule.fromDate = picker.start;
+    group.schedule.toDate = picker.end;
+    group.schedule.fromTime = initialTime;
+    group.schedule.toTime = finalTime;
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+        const SnackBar(content: Text("Saved"))
+    );
+  }
+  _pickFromDate(DateTime time) async {
     DateTime? newStart = await showDatePicker(
       context: context,
-      firstDate: DateTime(picker.start.year - 5),
-      lastDate: DateTime(picker.start.year + 5),
-      initialDate: picker.start,
+      firstDate: DateTime(time.year - 5),
+      lastDate: DateTime(time.year + 5),
+      initialDate: time,
     );
-    late DateTime end;
     if (newStart != null) {
-      end = DateTime(picker.start.year + 1, picker.start.month,
-          picker.start.day); // the present To date
-    }
-    if (end.difference(newStart!) >= Duration(days: 0)) {
-      picker = DateTimeRange(start: newStart, end: end);
-// x is where you store the (From,To) DateTime pairs
-// associated to the ’Other’ option
       setState(() {
-        selectedValue = "Other"; // to redraw the screen
+        selectedValue = "Other";
+        initialDate = newStart;
       });
-    } else {
-      _showAlertDates();
     }
   }
-
-  _pickFromTime() async {
-    TimeOfDay? newStartTime = await showTimePicker(
+  _pickToDate(DateTime time) async {
+    DateTime? newEnd = await showDatePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      firstDate: DateTime(time.year - 5),
+      lastDate: DateTime(time.year + 5),
+      initialDate: time,
     );
-
-    if (newStartTime != null) {
-      DateTime newStartTimeDateTime = DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-        newStartTime.hour,
-        newStartTime.minute,
-      );
-
-      DateTime end = newStartTimeDateTime.add(Duration(hours: 2));
-
-      // Show the time picker for the second time selection
-      TimeOfDay? newEndTime = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.fromDateTime(end),
-      );
-
-      if (newEndTime != null) {
-        DateTime newEndTimeDateTime = DateTime(
-          DateTime.now().year,
-          DateTime.now().month,
-          DateTime.now().day,
-          newEndTime.hour,
-          newEndTime.minute,
-        );
-
-        if (newEndTimeDateTime.isAfter(end)) {
-          // The second time is valid
-          picker = DateTimeRange(
-              start: newStartTimeDateTime, end: newEndTimeDateTime);
-
-          setState(() {
-            selectedValue = "Other";
-          });
-        } else {
-          // Show an error because the second time is not later than the first
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Error"),
-                content:
-                    Text("Selecciona una hora después de la primera hora."),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text("OK"),
-                  ),
-                ],
-              );
-            },
-          );
-        }
+    if (newEnd != null) {
+      if (newEnd.difference(initialDate!) >= Duration(days: 0)) {
+        picker = DateTimeRange(start: initialDate, end: newEnd);
+        // x is where you store the (From,To) DateTime pairs
+        // associated to the ’Other’ option
+        setState(() {
+          selectedValue = "Other"; // to redraw the screen
+          finalDate = newEnd;
+        });
+      } else {
+        _showAlertDates();
       }
     }
   }
 
-  /*_pickFromTime() async {
+  _pickFromTime(TimeOfDay time) async {
     TimeOfDay? newStartTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: time,
     );
-
     if (newStartTime != null) {
-      DateTime combinedDateTime = DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-        newStartTime.hour,
-        newStartTime.minute,
-      );
-
-      DateTime end = combinedDateTime.add(Duration(hours: 2));
-
-      picker = DateTimeRange(start: combinedDateTime, end: end);
-
       setState(() {
         selectedValue = "Other";
+        initialTime = newStartTime;
       });
     }
   }
-*/
-
+  _pickToTime(TimeOfDay time) async {
+    TimeOfDay? newEndTime = await showTimePicker(
+      context: context,
+      initialTime: time,
+    );
+    if (newEndTime != null) {
+      if (newEndTime.hour > initialTime.hour) {
+        // The second time is valid
+        //picker = DateTimeRange( start: newStartTime, end: newEndTime);
+        setState(() {
+          selectedValue = "Other";
+          finalTime = newEndTime;
+        });
+      } else {
+        // Show an error because the second time is not later than the first
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Error"),
+              content:
+              Text("Selecciona una hora valida."),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+  }
   TextButton _showAlertDates() {
     return TextButton(
       onPressed: () => showDialog<String>(
@@ -313,4 +310,19 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
       child: const Text('Show Dialog'),
     );
   }
+}
+
+printIntAsDay(int day) {
+  print('Received integer: $day. Corresponds to day: ${intDayToEnglish(day)}');
+}
+
+String intDayToEnglish(int day) {
+  if (day % 7 == DateTime.monday % 7) return 'Monday';
+  if (day % 7 == DateTime.tuesday % 7) return 'Tueday';
+  if (day % 7 == DateTime.wednesday % 7) return 'Wednesday';
+  if (day % 7 == DateTime.thursday % 7) return 'Thursday';
+  if (day % 7 == DateTime.friday % 7) return 'Friday';
+  if (day % 7 == DateTime.saturday % 7) return 'Saturday';
+  if (day % 7 == DateTime.sunday % 7) return 'Sunday';
+  throw '🐞 This should never have happened: $day';
 }

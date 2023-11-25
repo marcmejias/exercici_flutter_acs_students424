@@ -33,7 +33,7 @@ class _ScreenActionsState extends State<ScreenActions> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: Text("Info " + group.name),
+        title: Text("Actions " + group.name),
       ),
       body: Column(
         children: <Widget>[
