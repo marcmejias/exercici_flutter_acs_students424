@@ -199,6 +199,69 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
     );
 
     if (newStartTime != null) {
+      DateTime newStartTimeDateTime = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        newStartTime.hour,
+        newStartTime.minute,
+      );
+
+      DateTime end = newStartTimeDateTime.add(Duration(hours: 2));
+
+      // Show the time picker for the second time selection
+      TimeOfDay? newEndTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(end),
+      );
+
+      if (newEndTime != null) {
+        DateTime newEndTimeDateTime = DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+          newEndTime.hour,
+          newEndTime.minute,
+        );
+
+        if (newEndTimeDateTime.isAfter(end)) {
+          // The second time is valid
+          picker = DateTimeRange(start: newStartTimeDateTime, end: newEndTimeDateTime);
+
+          setState(() {
+            selectedValue = "Other";
+          });
+        } else {
+          // Show an error because the second time is not later than the first
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Error"),
+                content: Text("Selecciona una hora después de la primera hora."),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
+    }
+  }
+
+  /*_pickFromTime() async {
+    TimeOfDay? newStartTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (newStartTime != null) {
       DateTime combinedDateTime = DateTime(
         DateTime.now().year,
         DateTime.now().month,
@@ -216,6 +279,8 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
       });
     }
   }
+*/
+
 
   TextButton _showAlertDates() {
     return TextButton(
