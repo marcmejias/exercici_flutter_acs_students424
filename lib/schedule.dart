@@ -17,52 +17,56 @@ class ScreenSchedule extends StatefulWidget {
 class _ScreenScheduleState extends State<ScreenSchedule> {
   late UserGroup group;
 
-
   String? selectedValue;
   String? selectedValue2;
   String? selectedValue3;
   static DateTime today = DateTime.now();
-  static DateTime yesterday = yesterday = today.subtract(Duration(days:1));
-  static DateTime mondayThisWeek = DateTime(today.year, today.month,
-      today.day - today.weekday + 1);
-  static DateTime sundayThisWeek = DateTime(today.year, today.month,
-      today.day - today.weekday + 7);
-  static DateTime initialDate = mondayThisWeek.subtract(new Duration(days:7));
-  static DateTime finalDate = mondayThisWeek.subtract(new Duration(days:1));
+  static DateTime yesterday = yesterday = today.subtract(Duration(days: 1));
+  static DateTime mondayThisWeek =
+      DateTime(today.year, today.month, today.day - today.weekday + 1);
+  static DateTime sundayThisWeek =
+      DateTime(today.year, today.month, today.day - today.weekday + 7);
+  static DateTime initialDate = mondayThisWeek.subtract(new Duration(days: 7));
+  static DateTime finalDate = mondayThisWeek.subtract(new Duration(days: 1));
   late DateTimeRange picker;
 
-
-  TimeOfDay horaActual =TimeOfDay.now();
+  TimeOfDay horaActual = TimeOfDay.now();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     picker = DateTimeRange(start: initialDate, end: finalDate);
+    group = widget.group;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Schedule employees'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        title: Text('Schedule ' + group.name),
       ),
-      body: Center(
+      body: Container(
+        alignment: Alignment.center,
         child: Column(
-          children: [
-          Row(
-              children:[ Container(
-                width:100,
-                child: const Text('From',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 22,
+          children: <Widget>[
+            Row(
+              children: [
+                Container(
+                  width: 100,
+                  child: const Text(
+                    'From',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 22,
+                    ),
                   ),
                 ),
-              ),
-
                 Text(DateFormat('dd/MM/yyyy').format(picker.start)),
-                IconButton(icon: Icon(Icons.calendar_month_sharp),
+                IconButton(
+                  icon: Icon(Icons.calendar_month_sharp),
                   onPressed: () {
                     _pickFromDate();
                   },
@@ -70,18 +74,20 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
               ],
             ),
             Row(
-              children:[ Container(
-                width:100,
-                child: const Text('To',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 22,
+              children: [
+                Container(
+                  width: 100,
+                  child: const Text(
+                    'To',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      fontSize: 22,
+                    ),
                   ),
                 ),
-              ),
-
                 Text(DateFormat('dd/MM/yyyy').format(picker.end)),
-                IconButton(icon: Icon(Icons.calendar_month_sharp),
+                IconButton(
+                  icon: Icon(Icons.calendar_month_sharp),
                   onPressed: () {
                     _pickFromDate();
                   },
@@ -89,86 +95,91 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
               ],
             ),
             Row(
-              children:[
+              children: [
                 Container(
-                  width:200,
-                  child: const Text('Weekdays',
+                  width: 200,
+                  child: const Text(
+                    'Weekdays',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 22,
                     ),
                   ),
                 ),
-
-                  Text(DateFormat('dd/MM/yyyy').format(picker.end)),
-                  IconButton(icon: Icon(Icons.calendar_month_sharp),
-                    onPressed: () {
-                      _pickFromDate();
-                    },
-                  ),
+                Text(DateFormat('dd/MM/yyyy').format(picker.end)),
+                IconButton(
+                  icon: Icon(Icons.calendar_month_sharp),
+                  onPressed: () {
+                    _pickFromDate();
+                  },
+                ),
               ],
             ),
             Row(
-              children:[
+              children: [
                 Container(
-                  width:100,
-                  child: const Text('From',
+                  width: 100,
+                  child: const Text(
+                    'From',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 22,
                     ),
                   ),
                 ),
-
                 Text(DateFormat('HH:mm').format(picker.start)),
-                IconButton(icon: Icon(Icons.watch_later_outlined),
+                IconButton(
+                  icon: Icon(Icons.watch_later_outlined),
                   onPressed: () {
                     _pickFromTime();
                   },
                 ),
-
               ],
             ),
             Row(
-              children:[
+              children: [
                 Container(
-                  width:100,
-                  child: const Text('To',
+                  width: 100,
+                  child: const Text(
+                    'To',
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 22,
                     ),
                   ),
                 ),
-
                 Text(DateFormat('HH:mm').format(picker.end)),
-                IconButton(icon: Icon(Icons.watch_later_outlined),
+                IconButton(
+                  icon: Icon(Icons.watch_later_outlined),
                   onPressed: () {
                     _pickFromTime();
                   },
                 ),
               ],
             ),
-            Row(children:[
-              Container(
-                width:200,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20, ),
+            Row(
+              children: [
+                Container(
+                  width: 200,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onPressed: () {},
+                    child: const Text('Submit'),
                   ),
-                  onPressed: () {},
-                  child: const Text('Submit'),
                 ),
-              ),
-            ],
+              ],
             ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
-  _pickFromDate() async {
 
+  _pickFromDate() async {
     DateTime? newStart = await showDatePicker(
       context: context,
       firstDate: DateTime(picker.start.year - 5),
@@ -176,9 +187,9 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
       initialDate: picker.start,
     );
     late DateTime end;
-    if (newStart !=null) {
-      end = DateTime(
-          picker.start.year + 1, picker.start.month, picker.start.day); // the present To date
+    if (newStart != null) {
+      end = DateTime(picker.start.year + 1, picker.start.month,
+          picker.start.day); // the present To date
     }
     if (end.difference(newStart!) >= Duration(days: 0)) {
       picker = DateTimeRange(start: newStart, end: end);
@@ -226,7 +237,8 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
 
         if (newEndTimeDateTime.isAfter(end)) {
           // The second time is valid
-          picker = DateTimeRange(start: newStartTimeDateTime, end: newEndTimeDateTime);
+          picker = DateTimeRange(
+              start: newStartTimeDateTime, end: newEndTimeDateTime);
 
           setState(() {
             selectedValue = "Other";
@@ -238,7 +250,8 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text("Error"),
-                content: Text("Selecciona una hora después de la primera hora."),
+                content:
+                    Text("Selecciona una hora después de la primera hora."),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -281,7 +294,6 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
   }
 */
 
-
   TextButton _showAlertDates() {
     return TextButton(
       onPressed: () => showDialog<String>(
@@ -301,13 +313,4 @@ class _ScreenScheduleState extends State<ScreenSchedule> {
       child: const Text('Show Dialog'),
     );
   }
-
 }
-
-
-
-
-
-
-
-

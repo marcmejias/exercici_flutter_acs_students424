@@ -39,7 +39,7 @@ class _ScreenInfoState extends State<ScreenInfo> {
               TextFormField(
                 initialValue: group.name,
                 decoration: const InputDecoration(
-                  hintText: "Name Group",
+                  labelText: "Name Group",
                 ),
                 validator: (value) {
                   if (value != group.name) {
@@ -48,10 +48,11 @@ class _ScreenInfoState extends State<ScreenInfo> {
                   return null;
                 },
               ),
+              Divider(),
               TextFormField(
                 initialValue: group.description,
                 decoration: const InputDecoration(
-                  hintText: "Description",
+                  labelText: "Description",
                 ),
                 validator: (value) {
                   if (value != group.description) {
@@ -60,6 +61,7 @@ class _ScreenInfoState extends State<ScreenInfo> {
                   return null;
                 },
               ),
+              Divider(),
               Padding(
                 padding: EdgeInsets.zero,
                 child: ElevatedButton(

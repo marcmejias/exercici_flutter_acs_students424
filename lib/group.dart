@@ -34,13 +34,21 @@ class _ScreenGroupState extends State<ScreenGroup> {
       ),
       body: Center(
         child: GridView.count(
-          crossAxisCount: 5,
-          children: [
+          primary: false,
+          padding: const EdgeInsets.all(20),
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          crossAxisCount: 2,
+          children: <Widget>[
             Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.blue[100],
               child: Center(
                 child: Column(
-                  children: [
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
                     IconButton(
+                      iconSize: 72,
                         onPressed: () {
                           Navigator.of(context).pop(); // close drawer
                           Navigator.of(context).push(MaterialPageRoute<void>(
@@ -55,10 +63,14 @@ class _ScreenGroupState extends State<ScreenGroup> {
               ),
             ),
             Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.blue[100],
               child: Center(
                 child: Column(
-                  children: [
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
                     IconButton(
+                      iconSize: 72,
                       onPressed: () {
                         Navigator.of(context).pop(); // close drawer
                         Navigator.of(context).push(MaterialPageRoute<void>(
@@ -73,10 +85,14 @@ class _ScreenGroupState extends State<ScreenGroup> {
               ),
             ),
             Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.blue[100],
               child: Center(
                 child: Column(
-                  children: [
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
                     IconButton(
+                      iconSize: 72,
                       onPressed: () {
                         Navigator.of(context).pop(); // close drawer
                         Navigator.of(context).push(MaterialPageRoute<void>(
@@ -91,10 +107,14 @@ class _ScreenGroupState extends State<ScreenGroup> {
               ),
             ),
             Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.blue[100],
               child: Center(
                 child: Column(
-                  children: [
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
                     IconButton(
+                      iconSize: 72,
                       onPressed: () {
                       },
                       icon: const Icon(Icons.house),
@@ -105,10 +125,14 @@ class _ScreenGroupState extends State<ScreenGroup> {
               ),
             ),
             Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.blue[100],
               child: Center(
                 child: Column(
-                  children: [
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
                     IconButton(
+                      iconSize: 72,
                       onPressed: () {
                       },
                       icon: const Icon(Icons.verified_user),
@@ -121,20 +145,6 @@ class _ScreenGroupState extends State<ScreenGroup> {
           ],
         ),
       ),
-
-    );
-  }
-
-  Widget _buildRow(UserGroup userGroup, int index) {
-    return ListTile(
-      title: Text(userGroup.name),
-      trailing: Text('${userGroup.users.length}'),
-      onTap: () {
-        Navigator.of(context).pop(); // close drawer
-        Navigator.of(context).push(MaterialPageRoute<void>(
-          builder: (context) => ScreenListGroups(userGroups: Data.userGroups),
-        ));
-      },
     );
   }
 }
