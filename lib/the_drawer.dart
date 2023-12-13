@@ -1,6 +1,8 @@
+import 'package:exercise_flutter_acs/screen_partition.dart';
 import 'package:flutter/material.dart';
 
 import 'data.dart';
+import 'tree.dart';
 import 'screen_list_groups.dart';
 
 class TheDrawer {
@@ -21,8 +23,13 @@ class TheDrawer {
           ListTile(
             leading: const Icon(Icons.holiday_village),
             // https://material.io/resources/icons
-            title: const Text('Places'),
-            onTap: () {},
+            title: const Text('Building'),
+            onTap: () {
+              Navigator.of(context).pop(); // close drawer
+              Navigator.of(context).push(MaterialPageRoute<void>(
+                builder: (context) => ScreenPartition(id: "ROOT"),
+              ));
+            },
           ),
           ListTile(
             leading: const Icon(Icons.group),
