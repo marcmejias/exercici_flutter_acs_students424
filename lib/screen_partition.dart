@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'tree.dart';
 import 'screen_space.dart';
+import 'requests.dart';
 
 class ScreenPartition  extends StatefulWidget {
   final String id;
@@ -35,8 +36,11 @@ class _ScreenPartitionState  extends State<ScreenPartition> {
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               title: Text(snapshot.data!.root.id),
               actions: <Widget>[
-                IconButton(icon: const Icon(Icons.home), onPressed: () {}
-                  // TODO go home page = root
+                IconButton(icon: const Icon(Icons.home), onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const ScreenPartition(id: 'building'))
+                  );
+                }
                 ),
                 //TODO other actions
               ],
@@ -69,15 +73,15 @@ class _ScreenPartitionState  extends State<ScreenPartition> {
     assert (area is Partition || area is Space);
     if (area is Partition) {
       return ListTile(
-        title: Text('P ${area.id}'),
+        leading:  Icon(Icons.house_outlined),
+        title: Text(area.id),
         onTap: () => _navigateDownPartition(area.id),
-        // TODO, navigate down to show children areas
       );
     } else {
       return ListTile(
-        title: Text('S ${area.id}'),
+        leading:  Icon(Icons.house_rounded),
+        title: Text(area.id),
         onTap: () => _navigateDownSpace(area.id),
-        // TODO, navigate down to show children doors
       );
     }
   }
